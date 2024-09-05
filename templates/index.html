@@ -1,0 +1,282 @@
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>EOQ Calculadora</title>
+    <link href="/static/css/output.css" rel="stylesheet" />
+    <script src="/static/js/darkmode.js"></script>
+  </head>
+
+  <body
+    class="bg-gray-900 text-white dark:bg-white dark:text-gray-900 min-h-screen flex flex-col"
+  >
+    <!-- Header -->
+    <header
+      class="flex items-center justify-between border-b border-gray-700 p-4 dark:border-gray-300"
+    >
+      <div class="flex items-center space-x-4">
+        <div class="w-8 h-8 text-white dark:text-gray-900">
+          <!-- Icon -->
+          <svg
+            viewBox="0 0 48 48"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <g clip-path="url(#clip0_6_319)">
+              <path
+                d="M8.57829 8.57829C5.52816 11.6284 3.451 15.5145 2.60947 19.7452C1.76794 23.9758 2.19984 28.361 3.85056 32.3462C5.50128 36.3314 8.29667 39.7376 11.8832 42.134C15.4698 44.5305 19.6865 45.8096 24 45.8096C28.3135 45.8096 32.5302 44.5305 36.1168 42.134C39.7033 39.7375 42.4987 36.3314 44.1494 32.3462C45.8002 28.361 46.2321 23.9758 45.3905 19.7452C44.549 15.5145 42.4718 11.6284 39.4217 8.57829L24 24L8.57829 8.57829Z"
+                fill="currentColor"
+              />
+            </g>
+            <defs>
+              <clipPath id="clip0_6_319">
+                <rect width="48" height="48" fill="white"></rect>
+              </clipPath>
+            </defs>
+          </svg>
+        </div>
+        <h2 class="text-lg font-bold dark:text-gray-900">Yanl_dev</h2>
+      </div>
+
+      <button
+        class="bg-gray-800 dark:bg-gray-200 text-white dark:text-gray-900 px-3 py-2 rounded"
+        onclick="toggleDarkMode()"
+      >
+        Dark Mode
+      </button>
+    </header>
+
+    <!-- Content -->
+    <main class="flex-1 p-4">
+      <div class="max-w-lg mx-auto">
+        <h1 class="text-2xl font-bold mb-4 dark:text-gray-900">
+          (EOQ) Calculadora Economic Order Quantity
+        </h1>
+
+        <form id="eoqForm" class="space-y-6">
+          <!-- Demand Input -->
+          <div class="mb-4">
+            <label
+              for="demand"
+              class="block text-base font-medium mb-2 dark:text-gray-900"
+              >Demanda (D)</label
+            >
+            <input
+              type="number"
+              name="demand"
+              id="demand"
+              class="w-full p-3 rounded-xl bg-gray-800 border border-gray-600 text-white focus:border-blue-500 dark:bg-gray-200 dark:border-gray-300 dark:text-gray-900"
+              placeholder="Demanda"
+              required
+            />
+          </div>
+
+          <!-- Ordering Cost Input -->
+          <div class="mb-4">
+            <label
+              for="cost_order"
+              class="block text-base font-medium mb-2 dark:text-gray-900"
+              >Costo de orden (S)</label
+            >
+            <input
+              type="number"
+              name="cost_order"
+              id="cost_order"
+              class="w-full p-3 rounded-xl bg-gray-800 border border-gray-600 text-white focus:border-blue-500 dark:bg-gray-200 dark:border-gray-300 dark:text-gray-900"
+              placeholder="Costo de orden"
+              required
+            />
+          </div>
+
+          <!-- Holding Cost Input -->
+          <div class="mb-4">
+            <label
+              for="holding_cost"
+              class="block text-base font-medium mb-2 dark:text-gray-900"
+              >Costo de mantenimiento(H)</label
+            >
+            <input
+              type="number"
+              name="holding_cost"
+              id="holding_cost"
+              class="w-full p-3 rounded-xl bg-gray-800 border border-gray-600 text-white focus:border-blue-500 dark:bg-gray-200 dark:border-gray-300 dark:text-gray-900"
+              placeholder="Costo de mantenimiento"
+              required
+            />
+          </div>
+
+          <!-- Submit Button -->
+          <div class="mb-4">
+            <button
+              type="submit"
+              class="w-full p-3 bg-blue-500 text-white font-bold rounded-xl"
+            >
+              Calcular EOQ
+            </button>
+          </div>
+        </form>
+
+        <!-- Results Section -->
+        <div>
+          
+          <h3 class="text-xl font-bold mb-2 dark:text-gray-900">Interpretación de Resultados</h3>
+          <p class="mb-4 text-gray-300 dark:text-gray-800" id="interpretation">
+          Generando una interpretación...
+          </p>
+          <div class="mb-4">
+            <p class="text-xl">
+              El EOQ calculado es: <strong id="eoqResult"></strong>
+            </p>
+          </div>
+
+
+
+
+          <h3 class="text-xl font-bold mb-2 dark:text-gray-900">EOQ Formula</h3>
+          <p class="mb-4 text-gray-300 dark:text-gray-800">EOQ = √((2DS)/H)</p>
+
+          <h3 class="text-xl font-bold mb-2 dark:text-gray-900">EOQ Gráfico</h3>
+          <div class="bg-gray-800 p-4 rounded-xl dark:bg-gray-200">
+            <!-- Placeholder for EOQ Graph -->
+            <div id="graphContainer" class="h-96 bg-gray-700 rounded-xl dark:bg-gray-300 flex items-center justify-center">
+              <!-- SVG Animation -->
+              <svg
+                id="loadingSvg"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 200 200"
+                class="w-32 h-32 dark:bg-gray-800 bg-white"
+              >
+                <path fill="none" d="M0 0h200v200H0z"></path>
+                <path
+                  fill="none"
+                  stroke-linecap="round"
+                  stroke="#FFFFFF"
+                  stroke-width="15"
+                  transform-origin="center"
+                  d="M70 95.5V112m0-84v16.5m0 0a25.5 25.5 0 1 0 0 51 25.5 25.5 0 0 0 0-51Zm36.4 4.5L92 57.3M33.6 91 48 82.7m0-25.5L33.6 49m58.5 33.8 14.3 8.2"
+                >
+                  <animateTransform
+                    type="rotate"
+                    attributeName="transform"
+                    calcMode="spline"
+                    dur="3"
+                    values="0;-120"
+                    keyTimes="0;1"
+                    keySplines="0 0 1 1"
+                    repeatCount="indefinite"
+                  ></animateTransform>
+                </path>
+                <path
+                  fill="none"
+                  stroke-linecap="round"
+                  stroke="#FFFFFF"
+                  stroke-width="15"
+                  transform-origin="center"
+                  d="M130 155.5V172m0-84v16.5m0 0a25.5 25.5 0 1 0 0 51 25.5 25.5 0 0 0 0-51Zm36.4 4.5-14.3 8.3M93.6 151l14.3-8.3m0-25.4L93.6 109m58.5 33.8 14.3 8.2"
+                >
+                  <animateTransform
+                    type="rotate"
+                    attributeName="transform"
+                    calcMode="spline"
+                    dur="2"
+                    values="0;120"
+                    keyTimes="0;1"
+                    keySplines="0 0 1 1"
+                    repeatCount="indefinite"
+                  ></animateTransform>
+                </path>
+              </svg>
+          
+              <!-- Gráfico EOQ (oculto inicialmente) -->
+                <img id="eoqChart" class="w-full h-full object-contain rounded-xl hidden" />
+            </div>
+      </div>
+    </main>
+  </body>
+  <script>
+//   document.getElementById("eoqForm").addEventListener("submit", function (e) {
+//   e.preventDefault(); // Evitar el envío tradicional del formulario
+
+//   // Obtener los valores del formulario
+//   const demand = document.getElementById("demand").value;
+//   const costOrder = document.getElementById("cost_order").value;
+//   const holdingCost = document.getElementById("holding_cost").value;
+
+//   // Crear un objeto FormData para enviar los datos
+//   const formData = new FormData();
+//   formData.append("demand", demand);
+//   formData.append("cost_order", costOrder);
+//   formData.append("holding_cost", holdingCost);
+
+//   // Mostrar el SVG de carga y ocultar el gráfico al iniciar la solicitud
+//   document.getElementById("loadingSvg").classList.remove("hidden");
+//   document.getElementById("eoqChart").classList.add("hidden");
+
+//   // Realizar la solicitud AJAX al backend Flask
+//   fetch("/calculate", {
+//     method: "POST",
+//     body: formData,
+//   })
+//     .then((response) => response.json())
+//     .then((data) => {
+//       // Mostrar los resultados en la página
+//       document.getElementById("eoqResult").textContent = data.eoq.toFixed(2);
+
+//       // Mostrar el gráfico en base64
+//       const chart = document.getElementById("eoqChart");
+//       chart.src = `data:image/png;base64,${data.plot_url}`;
+
+//       // Ocultar el SVG de carga y mostrar el gráfico
+//       document.getElementById("loadingSvg").classList.add("hidden");
+//       document.getElementById("eoqChart").classList.remove("hidden");
+//     })
+//     .catch((error) => {
+//       console.error("Error:", error);
+//     });
+// });
+
+  document.getElementById("eoqForm").addEventListener("submit", function (e) {
+  e.preventDefault(); // Evitar el envío tradicional del formulario
+
+  // Obtener los valores del formulario
+  const demand = document.getElementById("demand").value;
+  const costOrder = document.getElementById("cost_order").value;
+  const holdingCost = document.getElementById("holding_cost").value;
+
+  // Crear un objeto FormData para enviar los datos
+  const formData = new FormData();
+  formData.append("demand", demand);
+  formData.append("cost_order", costOrder);
+  formData.append("holding_cost", holdingCost);
+
+  // Mostrar el SVG de carga y ocultar el gráfico al iniciar la solicitud
+  document.getElementById("loadingSvg").classList.remove("hidden");
+  document.getElementById("eoqChart").classList.add("hidden");
+
+  // Realizar la solicitud AJAX al backend Flask
+  fetch("/calculate", {
+    method: "POST",
+    body: formData,
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      // Mostrar los resultados en la página
+      document.getElementById("eoqResult").textContent = data.eoq.toFixed(2);
+      document.getElementById("interpretation").textContent = data.interpretation;
+
+      // Mostrar el gráfico en base64
+      const chart = document.getElementById("eoqChart");
+      chart.src = `data:image/png;base64,${data.plot_url}`;
+
+      // Ocultar el SVG de carga y mostrar el gráfico
+      document.getElementById("loadingSvg").classList.add("hidden");
+      document.getElementById("eoqChart").classList.remove("hidden");
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+    });
+});
+
+  </script>
+
+</html>
